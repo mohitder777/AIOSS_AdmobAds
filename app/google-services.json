@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "958248852867",
+    "firebase_url": "https://video-downloader-3b107-default-rtdb.firebaseio.com",
+    "project_id": "video-downloader-3b107",
+    "storage_bucket": "video-downloader-3b107.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:958248852867:android:ec77b7fc4b35675731eab6",
+        "android_client_info": {
+          "package_name": "com.vid.allvideodownloader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "958248852867-6n5qmsjc4r7mar44upqnu3cgds3q6aph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfPrpVJRdonQEH2x4_z87t3-QYKeJyZXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "958248852867-6n5qmsjc4r7mar44upqnu3cgds3q6aph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

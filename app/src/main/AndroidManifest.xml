@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.vid.allvideodownloader">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
+    <queries>
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+        <package android:name="com.eterno.shortvideos" />
+        <package android:name="io.chingari.app" />
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.mitron.tv" />
+        <package android:name="com.roposo.android" />
+        <package android:name="in.mohalla.sharechat" />
+        <package android:name="com.kwai.bulldog" />
+        <package android:name="com.vimeo.android.videoapp" />
+        <package android:name="com.instagram.android" />
+        <package android:name="video.like" />
+        <package android:name="com.twitter.android" />
+        <package android:name="com.zhiliaoapp.musically.go" />
+        <package android:name="com.zhiliaoapp.musically" />
+        <package android:name="com.next.innovation.takatak" />
+    </queries>
+
+    <application
+        android:name="com.vid.allvideodownloader.MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="false"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name="com.vid.allvideodownloader.LanguageActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.vid.allvideodownloader.StartActivity"
+            android:exported="false" />
+        <activity android:name="com.vid.allvideodownloader.activity.MainActivity2" />
+        <activity android:name="com.vid.allvideodownloader.activity.AllGamesActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.LoginActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.AboutUsActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.FacebookActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.TikTokActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.WhatsappActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.InstagramActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.FullViewActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.LikeeActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.JoshActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.MitronActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.ChingariActivity" />
+        <activity
+            android:name="com.vid.allvideodownloader.activity.SplashScreen"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.vid.allvideodownloader.activity.GalleryActivity" />
+        <activity
+            android:name="com.vid.allvideodownloader.activity.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.vid.allvideodownloader.activity.WebviewAcitivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.TwitterActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.RoposoActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.ShareChatActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.SnackVideoActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.MXTakaTakActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.MojActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.FBLoginActivity" />
+        <activity android:name="com.vid.allvideodownloader.activity.VideoPlayerActivity" />
+        <activity android:name="com.vid.allvideodownloader.GenderActivity"/>
+<activity android:name="com.vid.allvideodownloader.BaseActivity"/>
+        <activity android:name="com.vid.allvideodownloader.ExitActivity"/>
+        <activity android:name="com.vid.allvideodownloader.ThankyouActivity"/>
+
+        <activity
+            android:name="com.vid.allvideodownloader.activity.GamesPlayActivity"
+            android:screenOrientation="portrait" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
+
+        <service
+            android:name="com.vid.allvideodownloader.MyFirebaseMessagingService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher_round" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimaryDark" />
+    </application>
+
+</manifest>

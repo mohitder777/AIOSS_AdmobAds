@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".activity.StartActivity">
+
+        <ImageView
+            android:id="@+id/appheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+             />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/adView"
+            android:layout_below="@+id/appheader">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/nativeAd"
+                    android:layout_width="fill_parent"
+                    android:background="@color/dark_grey"
+                    android:layout_height="245dp">
+
+                    <com.google.android.ads.nativetemplates.TemplateView
+                        android:id="@+id/my_template"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:gnt_template_type="@layout/gnt_medium_template_view"
+                        tools:ignore="MissingClass" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/clickstartapp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:text="Click to Start"
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:text="Video Downloader for Social Media"
+                    android:textColor="@color/dark_grey_blue"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/btnStartapp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginVertical="45dp"
+                    android:background="@drawable/buttons_background"
+                    android:paddingHorizontal="100dp"
+                    android:paddingVertical="10dp"
+                    android:text="Start App"
+                    android:textColor="@color/white"
+                    android:textSize="17dp" />
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/rateApp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:background="@drawable/btn_rateapp" />
+
+                    <ImageView
+                        android:id="@+id/shareApp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="25dp"
+                        android:background="@drawable/btn_shareapp" />
+
+                    <ImageView
+                        android:id="@+id/btnprivacy"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:background="@drawable/btnprivacy" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+    </RelativeLayout>
+</layout>
