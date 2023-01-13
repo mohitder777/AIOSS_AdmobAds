@@ -7,6 +7,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -62,6 +63,7 @@ public class GalleryActivity  extends AppCompatActivity {
     boolean gaInter;
     boolean gaNative;
     boolean gaBanner;
+    LinearLayout bannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,8 @@ public class GalleryActivity  extends AppCompatActivity {
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
+
+        bannerView = findViewById(R.id.adView);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
 
@@ -112,9 +116,11 @@ public class GalleryActivity  extends AppCompatActivity {
 
     private void LoadBannerAd() {
         AdView adView = new AdView(this);
-        adView.setAdSize(AdSize.BANNER);
+        AdRequest adRequest = new AdRequest.Builder().build();
         adView.setAdUnitId(idBanner);
-        binding.adView.loadAd(new AdRequest.Builder().build());
+        adView.setAdSize(AdSize.BANNER);
+        adView.loadAd(adRequest);
+        bannerView.addView(adView);
 
     }
 

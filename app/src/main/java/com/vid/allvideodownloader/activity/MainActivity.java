@@ -23,6 +23,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.LoadingAds;
+import com.google.android.gms.ads.AdListener;
 import com.vid.allvideodownloader.ThankyouActivity;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.InterstitialAd;
@@ -60,12 +63,12 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
+import static com.vid.allvideodownloader.activity.SplashScreen.idBanner;
 import static com.vid.allvideodownloader.util.Utils.createFileFolder;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     MainActivity activity;
-    private AdView mAdView;
     UnifiedNativeAd admobNativeAD;
     InterstitialAd mInterstitialAd;
     ActivityMainBinding binding;
@@ -127,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (mainNative == true){
                     binding.RLTopLayout.setVisibility(View.VISIBLE);
-                    loadNativeAdsF();
+                   LoadNativeAd();
                 }else{
                     binding.RLTopLayout.setVisibility(View.GONE);
                 }
@@ -151,25 +154,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void loadNativeAdsF() {
-
-        DatabaseReference Native = firebaseDatabase.getReference("nativeId");
-        Native.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                idNative = snapshot.getValue(String.class);
-                Log.i("TagNative",idNative);
-                LoadNativeAd(idNative);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.i("TagNative",error.getMessage());
-            }
-        });
-
-
-    }
 
     public void loadInterstitialAds() {
 
@@ -195,27 +179,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void loadBannerAds() {
 
-        DatabaseReference Banner = firebaseDatabase.getReference("bannerId");
-        Banner.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                idBanner = snapshot.getValue(String.class);
+
+//        binding.adView.setVisibility(View.VISIBLE);
+//        AdView adView = new AdView(this);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        adView.setAdUnitId(idBanner);
+//        adView.setAdSize(AdSize.BANNER);
+//        adView.loadAd(adRequest);
+//        binding.adView.addView(adView);
 
 
-                Log.i("TagBanner",idBanner);
-                AdView adView = new AdView(MainActivity.this);
-                adView.setAdSize(AdSize.BANNER);
-                adView.setAdUnitId(idBanner);
-                binding.adView.loadAd(new AdRequest.Builder().build());
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.i("TagBanner",error.getMessage());
-            }
-        });
     }
 
 
@@ -903,16 +876,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return url;
     }
-    public  void LoadNativeAd(String data) {
+    public  void LoadNativeAd() {
         {
-            binding.myTemplate.setVisibility(View.VISIBLE);
+            binding.myTemplate.setVisibility(View.GONE);
+
+            LoadingAds loadingAds = new LoadingAds(this);
+            loadingAds.startLoadingDialog();
 
             MobileAds.initialize(activity, new OnInitializationCompleteListener() {
                 @Override
                 public void onInitializationComplete(InitializationStatus initializationStatus) {
                 }
             });
-            AdLoader adLoader = new AdLoader.Builder(activity, data)
+
+            AdLoader adLoader = new AdLoader.Builder(activity,idNative).withAdListener(new AdListener(){
+                        @Override
+                        public void onAdClosed() {
+                            super.onAdClosed();
+                            loadingAds.dismissDialog();
+                        }
+
+                        @Override
+                        public void onAdLoaded() {
+                            super.onAdLoaded();
+                            loadingAds.dismissDialog();
+                        }
+                    })
                     .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                         @Override
                         public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -930,10 +919,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             binding.myTemplate.setNativeAd(unifiedNativeAd);
                             binding.myTemplate.setBackground(getResources().getDrawable(R.drawable.rectangle_white));
                             binding.myTemplate.setVisibility(View.VISIBLE);
+
+
                         }
                     })
                     .build();
             adLoader.loadAd(new AdRequest.Builder().build());
+
+
+
         }
     }
 

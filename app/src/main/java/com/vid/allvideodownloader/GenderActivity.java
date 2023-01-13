@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.LoadingAds;
 import com.vid.allvideodownloader.activity.SplashScreen;
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.ads.nativetemplates.TemplateView;
@@ -41,7 +43,7 @@ public class GenderActivity extends AppCompatActivity {
     TextView btnnextstep;
     FirebaseDatabase firebaseDatabase;
     TemplateView my_template;
-    AdView bannerView;
+    LinearLayout bannerView;
     InterstitialAd mInterstitialAd;
     RadioButton radioFemale, radioMale;
     RadioGroup genderRadio;
@@ -56,7 +58,7 @@ public class GenderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gender);
         genderRadio = (RadioGroup) findViewById(R.id.genderRadio);
         btnnextstep = (TextView) findViewById(R.id.btnnextstep);
-        bannerView = (AdView) findViewById(R.id.adView);
+        bannerView =  findViewById(R.id.adView);
         my_template = (TemplateView) findViewById(R.id.my_template);
         radioFemale = (RadioButton) findViewById(R.id.radioFemale);
         radioMale = (RadioButton) findViewById(R.id.radioMale);
@@ -135,67 +137,53 @@ public class GenderActivity extends AppCompatActivity {
     }
 
     public void loadBannerAds() {
-        bannerView.setVisibility(View.VISIBLE);
-        DatabaseReference Banner = firebaseDatabase.getReference("bannerId");
-        Banner.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                AdView adView = new AdView(GenderActivity.this);
-                adView.setAdSize(AdSize.BANNER);
-                adView.setAdUnitId(idBanner);
-                bannerView.loadAd(new AdRequest.Builder().build());
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+        AdView adView = new AdView(this);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.setAdUnitId(idBanner);
+        adView.setAdSize(AdSize.BANNER);
+        adView.loadAd(adRequest);
+        bannerView.addView(adView);
+
     }
 
     public void loadNativeAds() {
-        DatabaseReference Native = firebaseDatabase.getReference("nativeId");
-        Native.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+        LoadingAds loadingAds = new LoadingAds(this);
+        loadingAds.startLoadingDialog();
+
+        AdLoader.Builder builder = new AdLoader.Builder(this, idNative);
+        builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
             @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                AdLoader.Builder builder = new AdLoader.Builder(GenderActivity.this, idNative);
-                builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                        my_template.setVisibility(View.VISIBLE);
-                        NativeTemplateStyle thop_nativeTemplateStyle = new NativeTemplateStyle.Builder().build();
-                        my_template.setStyles(thop_nativeTemplateStyle);
-                        my_template.setNativeAd(unifiedNativeAd);
-                    }
-                }).build();
+            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                my_template.setVisibility(View.VISIBLE);
+                NativeTemplateStyle thop_nativeTemplateStyle = new NativeTemplateStyle.Builder().build();
+                my_template.setStyles(thop_nativeTemplateStyle);
+                my_template.setNativeAd(unifiedNativeAd);
+            }
+        }).build();
 
-                AdLoader adLoader = builder.withAdListener(new AdListener() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                    }
-
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        nativeAd.setBackgroundColor(getResources().getColor(R.color.transparent));
-                    }
-
-
-                }).build();
-                adLoader.loadAd(new AdRequest.Builder().build());
+        AdLoader adLoader = builder.withAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                loadingAds.dismissDialog();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                nativeAd.setBackgroundColor(getResources().getColor(R.color.transparent));
+                loadingAds.dismissDialog();
             }
-        });
+
+
+        }).build();
+        adLoader.loadAd(new AdRequest.Builder().build());
+
     }
 
     public void loadInterstitialAds() {
-        DatabaseReference Inter = firebaseDatabase.getReference("interId");
-        Inter.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
+
                 mInterstitialAd = new InterstitialAd(GenderActivity.this);
                 mInterstitialAd.setAdUnitId(SplashScreen.idInter);
                 mInterstitialAd.setAdListener(new AdListener() {
@@ -206,12 +194,7 @@ public class GenderActivity extends AppCompatActivity {
                     }
                 });
                 requestNewInterstitial();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
     }
 
     private void requestNewInterstitial() {

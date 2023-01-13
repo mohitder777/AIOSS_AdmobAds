@@ -22,10 +22,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.LoadingAds;
 import com.vid.allvideodownloader.databinding.ActivityStart2Binding;
 import com.vid.allvideodownloader.databinding.ActivityStartBinding;
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
@@ -52,11 +54,12 @@ public class StartActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     TemplateView my_template;
     RelativeLayout nativeAd;
-    AdView bannerView;
+    LinearLayout bannerView;
     boolean startBanner;
     boolean startInter;
     boolean startNative;
     private ActivityStart2Binding binding;
+
 
 
     @Override
@@ -68,10 +71,13 @@ public class StartActivity extends AppCompatActivity {
         rateApp = (ImageView) findViewById(R.id.rateApp);
         shareApp = (ImageView) findViewById(R.id.shareApp);
         btnprivacy = (ImageView) findViewById(R.id.btnprivacy);
-        bannerView = (AdView) findViewById(R.id.adView);
+        bannerView = findViewById(R.id.adView);
         my_template = (TemplateView) findViewById(R.id.my_template);
         nativeAd = (RelativeLayout) findViewById(R.id.nativeAd);
         FirebaseApp.initializeApp(StartActivity.this);
+
+
+
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference adsBoolean = firebaseDatabase.getReference("startActivity");
@@ -207,22 +213,15 @@ public class StartActivity extends AppCompatActivity {
         return connected;
     }
 
-    public void loadBannerAds() {
-        bannerView.setVisibility(View.VISIBLE);
-        DatabaseReference Banner = firebaseDatabase.getReference("bannerId");
-        Banner.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                AdView adView = new AdView(StartActivity.this);
-                adView.setAdSize(AdSize.BANNER);
-                adView.setAdUnitId(idBanner);
-                bannerView.loadAd(new AdRequest.Builder().build());
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+    public void loadBannerAds() {
+
+        AdView adView = new AdView(this);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.setAdUnitId(idBanner);
+        adView.setAdSize(AdSize.BANNER);
+        adView.loadAd(adRequest);
+        bannerView.addView(adView);
     }
 
     @Override
@@ -231,6 +230,10 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void loadNativeAds() {
+
+      LoadingAds  loadingAds = new LoadingAds(this);
+        loadingAds.startLoadingDialog();
+
         AdLoader.Builder builder = new AdLoader.Builder(StartActivity.this, idNative);
         builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
             @Override
@@ -246,12 +249,14 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onAdClosed() {
                 super.onAdClosed();
+                loadingAds.dismissDialog();
             }
 
             @Override
             public void onAdLoaded() {
                 super.onAdLoaded();
                 nativeAd.setBackgroundColor(getResources().getColor(R.color.transparent));
+                loadingAds.dismissDialog();
             }
 
 
@@ -259,10 +264,7 @@ public class StartActivity extends AppCompatActivity {
         adLoader.loadAd(new AdRequest.Builder().build());
     }
     public void loadInterstitialAds() {
-        DatabaseReference Inter = firebaseDatabase.getReference("interId");
-        Inter.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
+
                 mInterstitialAd = new InterstitialAd(StartActivity.this);
                 mInterstitialAd.setAdUnitId(idInter);
                 mInterstitialAd.setAdListener(new AdListener() {
@@ -272,13 +274,9 @@ public class StartActivity extends AppCompatActivity {
                         requestNewInterstitial();
                     }
                 });
-                requestNewInterstitial();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                requestNewInterstitial();
+
     }
 
     private void requestNewInterstitial() {

@@ -14,7 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.LoadingAds;
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -98,11 +100,11 @@ public class AllGamesActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mInterstitialAd.isLoaded()){
+
             if (mInterstitialAd != null){
                 mInterstitialAd.show();
             }
-        }
+
         super.onBackPressed();
     }
 
@@ -110,13 +112,28 @@ public class AllGamesActivity extends AppCompatActivity {
         {
             binding.myTemplate.setVisibility(View.GONE);
 
+            LoadingAds loadingAds = new LoadingAds(this);
+            loadingAds.startLoadingDialog();
+
             MobileAds.initialize(activity, new OnInitializationCompleteListener() {
                 @Override
                 public void onInitializationComplete(InitializationStatus initializationStatus) {
                 }
             });
 
-            AdLoader adLoader = new AdLoader.Builder(activity,idNative)
+            AdLoader adLoader = new AdLoader.Builder(activity,idNative).withAdListener(new AdListener(){
+                        @Override
+                        public void onAdClosed() {
+                            super.onAdClosed();
+                            loadingAds.dismissDialog();
+                        }
+
+                        @Override
+                        public void onAdLoaded() {
+                            super.onAdLoaded();
+                            loadingAds.dismissDialog();
+                        }
+                    })
                     .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                         @Override
                         public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -134,10 +151,15 @@ public class AllGamesActivity extends AppCompatActivity {
                             binding.myTemplate.setNativeAd(unifiedNativeAd);
                             binding.myTemplate.setBackground(getResources().getDrawable(R.drawable.rectangle_white));
                             binding.myTemplate.setVisibility(View.VISIBLE);
+
+
                         }
                     })
                     .build();
             adLoader.loadAd(new AdRequest.Builder().build());
+
+
+
         }
     }
 

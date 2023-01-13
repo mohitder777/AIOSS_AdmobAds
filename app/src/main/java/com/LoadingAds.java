@@ -12,17 +12,17 @@ public class LoadingAds {
         private Activity activity;
         private AlertDialog dialog;
 
-        public LoadingAds ( Activity myActivity ){
+        public  LoadingAds ( Activity myActivity ){
 
             activity = myActivity;
 
         }
-        public void startLoadingDialog(){
+        public  void startLoadingDialog(){
 
-            AlertDialog.Builder builder = new AlertDialog.Builder ( activity );
+            AlertDialog.Builder builder = new AlertDialog.Builder (activity);
             LayoutInflater inflater =activity.getLayoutInflater ();
-            builder.setView ( inflater.inflate ( R.layout.loding_dialog_ads,null));
-            builder.setCancelable (false);
+            builder.setView (inflater.inflate(R.layout.loding_dialog_ads,null));
+            builder.setCancelable (true);
 
             dialog=builder.create ();
             dialog.show ();

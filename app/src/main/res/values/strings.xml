@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">All Video Downloader</string>
+    <string name="app_name" translatable="false">Video Downloader</string>
     <string name="tag_line" translatable="false">Download All Video on One Click</string>
 
     <!-- TODO: Remove or change this placeholder text -->

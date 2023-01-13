@@ -13,22 +13,12 @@
         android:background="@color/white"
         tools:context=".activity.StartActivity">
 
-        <ImageView
-            android:id="@+id/appheader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-             />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/adView"
-            android:layout_below="@+id/appheader">
+            android:layout_alignParentTop="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,14 +29,14 @@
                 <RelativeLayout
                     android:id="@+id/nativeAd"
                     android:layout_width="fill_parent"
-                    android:background="@color/dark_grey"
-                    android:layout_height="245dp">
+                    android:layout_height="wrap_content"
+                    android:background="@color/dark_grey">
 
                     <com.google.android.ads.nativetemplates.TemplateView
                         android:id="@+id/my_template"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         app:gnt_template_type="@layout/gnt_medium_template_view"
                         tools:ignore="MissingClass" />
                 </RelativeLayout>
@@ -77,7 +67,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginVertical="45dp"
-                    android:background="@drawable/buttons_background"
+                    android:background="@drawable/et_back"
+                    android:backgroundTint="#FF4D4D"
                     android:paddingHorizontal="100dp"
                     android:paddingVertical="10dp"
                     android:text="Start App"
@@ -85,10 +76,10 @@
                     android:textSize="17dp" />
 
                 <LinearLayout
-                    android:padding="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:padding="10dp">
 
                     <ImageView
                         android:id="@+id/rateApp"
@@ -112,14 +103,14 @@
             </LinearLayout>
         </ScrollView>
 
-        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
             android:id="@+id/adView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone"
-            ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+            android:gravity="center"
+            android:visibility="visible"
+            android:orientation="horizontal" />
+
     </RelativeLayout>
 </layout>

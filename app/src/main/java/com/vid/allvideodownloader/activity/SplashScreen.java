@@ -68,9 +68,6 @@ public class SplashScreen extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance();
         getAds();
 
-
-
-
         appOpenManager = new AppOpenManager(SplashScreen.this);
         if (appOpenManager.isAdAvailable()){
 

@@ -3,6 +3,7 @@ package com.vid.allvideodownloader;
 
 
 import static com.vid.allvideodownloader.activity.SplashScreen.idBanner;
+import static com.vid.allvideodownloader.activity.SplashScreen.idNative;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,12 +13,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.LoadingAds;
 import com.vid.allvideodownloader.activity.MainActivity;
 import com.vid.allvideodownloader.activity.SplashScreen;
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
@@ -42,7 +45,7 @@ public class BaseActivity extends AppCompatActivity {
     ImageView imBack;
     FirebaseDatabase firebaseDatabase;
     TemplateView my_template;
-    AdView bannerView;
+    LinearLayout bannerView;
     InterstitialAd mInterstitialAd;
     RelativeLayout nativeAd;
     boolean baseBanner;
@@ -55,7 +58,7 @@ public class BaseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_base);
         imBack = (ImageView) findViewById(R.id.imBack);
         btnStartapp = (TextView) findViewById(R.id.btnStartapp);
-        bannerView = (AdView) findViewById(R.id.adView);
+        bannerView =  findViewById(R.id.adView);
         my_template = (TemplateView) findViewById(R.id.my_template);
         nativeAd = (RelativeLayout) findViewById(R.id.nativeAd);
         FirebaseApp.initializeApp(BaseActivity.this);
@@ -136,60 +139,49 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void loadBannerAds() {
-        bannerView.setVisibility(View.VISIBLE);
-        DatabaseReference Banner = firebaseDatabase.getReference("bannerId");
-        Banner.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                AdView adView = new AdView(BaseActivity.this);
-                adView.setAdSize(AdSize.BANNER);
+                bannerView.setVisibility(View.VISIBLE);
+                AdView adView = new AdView(this);
+                AdRequest adRequest = new AdRequest.Builder().build();
                 adView.setAdUnitId(idBanner);
-                bannerView.loadAd(new AdRequest.Builder().build());
-            }
+                adView.setAdSize(AdSize.BANNER);
+                adView.loadAd(adRequest);
+                bannerView.addView(adView);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+
     }
 
     public void loadNativeAds() {
-        DatabaseReference Native = firebaseDatabase.getReference("nativeId");
-        Native.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+        LoadingAds loadingAds = new LoadingAds(this);
+        loadingAds.startLoadingDialog();
+
+        AdLoader.Builder builder = new AdLoader.Builder(this, idNative);
+        builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
             @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                AdLoader.Builder builder = new AdLoader.Builder(BaseActivity.this, SplashScreen.idNative);
-                builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                        my_template.setVisibility(View.VISIBLE);
-                        NativeTemplateStyle thop_nativeTemplateStyle = new NativeTemplateStyle.Builder().build();
-                        my_template.setStyles(thop_nativeTemplateStyle);
-                        my_template.setNativeAd(unifiedNativeAd);
-                    }
-                }).build();
+            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                my_template.setVisibility(View.VISIBLE);
+                NativeTemplateStyle thop_nativeTemplateStyle = new NativeTemplateStyle.Builder().build();
+                my_template.setStyles(thop_nativeTemplateStyle);
+                my_template.setNativeAd(unifiedNativeAd);
+            }
+        }).build();
 
-                AdLoader adLoader = builder.withAdListener(new AdListener() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                    }
-
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        nativeAd.setBackgroundColor(getResources().getColor(R.color.transparent));
-                    }
-
-
-                }).build();
-                adLoader.loadAd(new AdRequest.Builder().build());
+        AdLoader adLoader = builder.withAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                loadingAds.dismissDialog();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                nativeAd.setBackgroundColor(getResources().getColor(R.color.transparent));
+                loadingAds.dismissDialog();
             }
-        });
+
+
+        }).build();
+        adLoader.loadAd(new AdRequest.Builder().build());
     }
     public void loadInterstitialAds() {
         DatabaseReference Inter = firebaseDatabase.getReference("interId");

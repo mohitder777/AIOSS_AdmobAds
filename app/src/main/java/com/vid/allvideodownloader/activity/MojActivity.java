@@ -18,9 +18,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.LoadingAds;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
 import com.vid.allvideodownloader.R;
 import com.vid.allvideodownloader.api.CommonClassForAPI;
 import com.vid.allvideodownloader.databinding.LayoutGlobalUiBinding;
@@ -354,12 +356,28 @@ public class MojActivity extends AppCompatActivity {
         {
             binding.myNative.setVisibility(View.GONE);
 
+            LoadingAds loadingAds = new LoadingAds(this);
+            loadingAds.startLoadingDialog();
+
             MobileAds.initialize(activity, new OnInitializationCompleteListener() {
                 @Override
                 public void onInitializationComplete(InitializationStatus initializationStatus) {
                 }
             });
-            AdLoader adLoader = new AdLoader.Builder(activity, idNative)
+
+            AdLoader adLoader = new AdLoader.Builder(activity,idNative).withAdListener(new AdListener(){
+                        @Override
+                        public void onAdClosed() {
+                            super.onAdClosed();
+                            loadingAds.dismissDialog();
+                        }
+
+                        @Override
+                        public void onAdLoaded() {
+                            super.onAdLoaded();
+                            loadingAds.dismissDialog();
+                        }
+                    })
                     .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                         @Override
                         public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -377,10 +395,15 @@ public class MojActivity extends AppCompatActivity {
                             binding.myNative.setNativeAd(unifiedNativeAd);
                             binding.myNative.setBackground(getResources().getDrawable(R.drawable.rectangle_white));
                             binding.myNative.setVisibility(View.VISIBLE);
+
+
                         }
                     })
                     .build();
             adLoader.loadAd(new AdRequest.Builder().build());
+
+
+
         }
     }
 

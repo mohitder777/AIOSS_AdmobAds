@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,11 +22,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.LoadingAds;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
 import com.vid.allvideodownloader.R;
 import com.vid.allvideodownloader.adapter.FBStoriesListAdapter;
 import com.vid.allvideodownloader.adapter.FbStoryUserListAdapter;
@@ -98,6 +101,7 @@ public class FacebookActivity extends AppCompatActivity implements UserListInter
     boolean fbInter;
     boolean fbBanner;
     boolean fbNative;
+    LinearLayout bannerView;
 
     @Override
     public void onBackPressed() {
@@ -121,6 +125,8 @@ public class FacebookActivity extends AppCompatActivity implements UserListInter
             }
         });
 
+
+        bannerView = findViewById(R.id.adView);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
 
@@ -177,11 +183,12 @@ public class FacebookActivity extends AppCompatActivity implements UserListInter
     }
 
     private void LoadBannerAd() {
-
         AdView adView = new AdView(this);
-        adView.setAdSize(AdSize.BANNER);
+        AdRequest adRequest = new AdRequest.Builder().build();
         adView.setAdUnitId(idBanner);
-        binding.adView.loadAd(new AdRequest.Builder().build());
+        adView.setAdSize(AdSize.BANNER);
+        adView.loadAd(adRequest);
+        bannerView.addView(adView);
     }
 
     private void InterstitialAdsINIT() {
@@ -564,12 +571,30 @@ public class FacebookActivity extends AppCompatActivity implements UserListInter
 
     public void LoadNativeAd() {
         {
+            binding.myInstaNative.setVisibility(View.GONE);
+
+            LoadingAds loadingAds = new LoadingAds(this);
+            //loadingAds.startLoadingDialog();
+
             MobileAds.initialize(activity, new OnInitializationCompleteListener() {
                 @Override
                 public void onInitializationComplete(InitializationStatus initializationStatus) {
                 }
             });
-            AdLoader adLoader = new AdLoader.Builder(activity,idNative)
+
+            AdLoader adLoader = new AdLoader.Builder(activity,idNative).withAdListener(new AdListener(){
+                        @Override
+                        public void onAdClosed() {
+                            super.onAdClosed();
+                            loadingAds.dismissDialog();
+                        }
+
+                        @Override
+                        public void onAdLoaded() {
+                            super.onAdLoaded();
+                            loadingAds.dismissDialog();
+                        }
+                    })
                     .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                         @Override
                         public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -587,10 +612,15 @@ public class FacebookActivity extends AppCompatActivity implements UserListInter
                             binding.myInstaNative.setNativeAd(unifiedNativeAd);
                             binding.myInstaNative.setBackground(getResources().getDrawable(R.drawable.rectangle_white));
                             binding.myInstaNative.setVisibility(View.VISIBLE);
+
+
                         }
                     })
                     .build();
             adLoader.loadAd(new AdRequest.Builder().build());
+
+
+
         }
     }
 

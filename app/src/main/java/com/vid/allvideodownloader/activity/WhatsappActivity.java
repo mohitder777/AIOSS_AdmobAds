@@ -15,6 +15,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -69,6 +70,7 @@ public class WhatsappActivity extends AppCompatActivity {
     boolean whatsBanner;
     boolean whatsInter;
     boolean whatsNative;
+    LinearLayout bannerView;
 
 
 
@@ -82,6 +84,8 @@ public class WhatsappActivity extends AppCompatActivity {
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
+
+        bannerView = findViewById(R.id.adView);
 
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -134,10 +138,12 @@ public class WhatsappActivity extends AppCompatActivity {
     }
 
     private void loadBannerAds() {
-        AdView adView = new AdView(WhatsappActivity.this);
-        adView.setAdSize(AdSize.BANNER);
+        AdView adView = new AdView(this);
+        AdRequest adRequest = new AdRequest.Builder().build();
         adView.setAdUnitId(idBanner);
-        binding.adView.loadAd(new AdRequest.Builder().build());
+        adView.setAdSize(AdSize.BANNER);
+        adView.loadAd(adRequest);
+        bannerView.addView(adView);
     }
 
 

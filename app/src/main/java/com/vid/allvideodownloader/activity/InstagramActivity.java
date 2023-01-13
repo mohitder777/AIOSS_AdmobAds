@@ -14,6 +14,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.LoadingAds;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
 import com.vid.allvideodownloader.R;
 import com.vid.allvideodownloader.adapter.StoriesListAdapter;
 import com.vid.allvideodownloader.adapter.UserListAdapter;
@@ -104,6 +107,7 @@ public class InstagramActivity extends AppCompatActivity implements UserListInte
     boolean instaInter;
     boolean instaNative;
     boolean instaBanner;
+    LinearLayout bannerView;
 
     @Override
     public void onBackPressed() {
@@ -125,6 +129,8 @@ public class InstagramActivity extends AppCompatActivity implements UserListInte
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
+
+        bannerView = findViewById(R.id.adView);
 
         requestQueue= Volley.newRequestQueue(this);
 
@@ -159,6 +165,7 @@ public class InstagramActivity extends AppCompatActivity implements UserListInte
                 if (instaNative == true){
                     binding.myInstaNative.setVisibility(View.VISIBLE);
                     LoadNativeAd();
+
                 }else{
                     binding.myInstaNative.setVisibility(View.GONE);
                 }
@@ -178,14 +185,66 @@ public class InstagramActivity extends AppCompatActivity implements UserListInte
 
     }
 
+    public void LoadNativeAd() {
+        {
+            binding.myInstaNative.setVisibility(View.GONE);
+
+            LoadingAds loadingAds = new LoadingAds(this);
+            //loadingAds.startLoadingDialog();
+
+            MobileAds.initialize(activity, new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(InitializationStatus initializationStatus) {
+                }
+            });
+
+            AdLoader adLoader = new AdLoader.Builder(activity,idNative).withAdListener(new AdListener(){
+                        @Override
+                        public void onAdClosed() {
+                            super.onAdClosed();
+                            loadingAds.dismissDialog();
+                        }
+
+                        @Override
+                        public void onAdLoaded() {
+                            super.onAdLoaded();
+                            loadingAds.dismissDialog();
+                        }
+                    })
+                    .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                        @Override
+                        public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                            if (admobNativeAD != null) {
+                                admobNativeAD.destroy();
+                            }
+                            admobNativeAD = unifiedNativeAd;
+
+                            NativeTemplateStyle styles = new
+                                    NativeTemplateStyle.Builder()
+                                    .withCallToActionBackgroundColor
+                                            (new ColorDrawable(ContextCompat.getColor(activity, R.color.colorAccent)))
+                                    .build();
+                            binding.myInstaNative.setStyles(styles);
+                            binding.myInstaNative.setNativeAd(unifiedNativeAd);
+                            binding.myInstaNative.setBackground(getResources().getDrawable(R.drawable.rectangle_white));
+                            binding.myInstaNative.setVisibility(View.VISIBLE);
+
+
+                        }
+                    })
+                    .build();
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+        }
+    }
+
     private void LoadBannerAd() {
-
         AdView adView = new AdView(this);
-        adView.setAdSize(AdSize.BANNER);
+        AdRequest adRequest = new AdRequest.Builder().build();
         adView.setAdUnitId(idBanner);
-        binding.adView.loadAd(new AdRequest.Builder().build());
-
-
+        adView.setAdSize(AdSize.BANNER);
+        adView.loadAd(adRequest);
+        bannerView.addView(adView);
 
     }
 
@@ -725,38 +784,7 @@ public class InstagramActivity extends AppCompatActivity implements UserListInte
     };
 
 
-    public void LoadNativeAd() {
-        {
 
-            MobileAds.initialize(activity, new OnInitializationCompleteListener() {
-                @Override
-                public void onInitializationComplete(InitializationStatus initializationStatus) {
-                }
-            });
-            AdLoader adLoader = new AdLoader.Builder(activity, idNative)
-                    .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-                        @Override
-                        public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                            if (admobNativeAD != null) {
-                                admobNativeAD.destroy();
-                            }
-                            admobNativeAD = unifiedNativeAd;
-
-                            NativeTemplateStyle styles = new
-                                    NativeTemplateStyle.Builder()
-                                    .withCallToActionBackgroundColor
-                                            (new ColorDrawable(ContextCompat.getColor(activity, R.color.colorAccent)))
-                                    .build();
-                            binding.myInstaNative.setStyles(styles);
-                            binding.myInstaNative.setNativeAd(unifiedNativeAd);
-                            binding.myInstaNative.setBackground(getResources().getDrawable(R.drawable.rectangle_white));
-                            binding.myInstaNative.setVisibility(View.VISIBLE);
-                        }
-                    })
-                    .build();
-            adLoader.loadAd(new AdRequest.Builder().build());
-        }
-    }
 
 
 

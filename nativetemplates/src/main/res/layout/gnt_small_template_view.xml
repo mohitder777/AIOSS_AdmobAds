@@ -3,21 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
   <com.google.android.gms.ads.formats.UnifiedNativeAdView
-      android:layout_height="wrap_content"
+      android:layout_height="125dp"
       android:layout_width="match_parent"
       android:layout_centerInParent="true"
-      android:id="@+id/native_ad_view"
-      >
+      android:id="@+id/native_ad_view">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_centerInParent="true"
-        android:background="@drawable/gnt_rounded_corners_shape"
-        >
+        android:background="@drawable/rectangle_white">
       <androidx.constraintlayout.widget.ConstraintLayout
 
-          android:layout_width="@dimen/gnt_no_size"
+          android:layout_width="match_parent"
           android:layout_height="@dimen/gnt_no_size"
           android:layout_marginEnd="@dimen/gnt_default_margin"
           android:layout_marginStart="@dimen/gnt_default_margin"
@@ -166,7 +164,8 @@
               android:id="@+id/cta"
               android:layout_width="match_parent"
               android:layout_height="@dimen/gnt_no_size"
-              android:background="@color/gnt_blue"
+              android:background="@drawable/et_back"
+              android:backgroundTint="#FF4D4D"
               android:textColor="@color/gnt_white"
               android:lines="1"
               app:layout_constraintBottom_toBottomOf="parent"
